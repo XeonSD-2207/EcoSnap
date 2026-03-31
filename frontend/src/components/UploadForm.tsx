@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import AIResult from "./AIResult";
 import HeatmapCanvas from "./HeatmapCanvas";
