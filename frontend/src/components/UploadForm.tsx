@@ -23,7 +23,7 @@ export default function UploadForm() {
     formData.append('file', files[0]);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/reports/', formData);
+      const response = await axios.post('http://127.0.0.1:8000/reports', formData);
       setResult(response.data);
     } catch (error) {
       console.error("Error:", error);
