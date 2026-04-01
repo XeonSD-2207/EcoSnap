@@ -1,6 +1,13 @@
 from fastapi import APIRouter, UploadFile, File
 from app.services.ai import analyze_image
-
+{
+  "severity": "high",
+  "type": "Illegal Dumping",
+  "boxes": [
+    {"x": 100, "y": 150, "width": 50, "height": 50},
+    {"x": 300, "y": 200, "width": 80, "height": 60}
+  ]
+}
 router = APIRouter()
 
 @router.post("/")

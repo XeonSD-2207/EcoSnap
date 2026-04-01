@@ -30,11 +30,11 @@ export default function AIResult({ severity, type }: Props) {
         <span
           className={`px-3 py-1 text-white rounded-lg shadow ${color}`}
         >
-          {severity.toUpperCase()}
+          {severity?.toUpperCase() || "N/A"}
         </span>
 
         <span className="text-gray-700 dark:text-gray-300">
-          {type}
+          {type?.toUpperCase() || "N/A"}
         </span>
       </div>
     </motion.div>
