@@ -20,58 +20,49 @@ export default function UploadForm() {
     if (files.length === 0) return;
     setLoading(true);
     setResult(null);
+
     const formData = new FormData();
-    formData.append('file', files[0]);
+    
+    formData.append('file', files[0]); 
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/reports', formData);
+      // Đổi localhost thành 127.0.0.1 để tránh lỗi CORS khi backend chạy trên localhost
+      const response = await axios.post('http://127.0.0.1:8000/reports/', formData);
       setResult(response.data);
     } catch (error) {
-      console.error("Error:", error);
-      alert("Fail to respond. Please try again!");
+      console.error("Lỗi kết nối:", error);
+      alert("Backend chưa chạy hoặc sai địa chỉ API!");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (result) {
-      document.getElementById("result")?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [result]);
-
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow w-full">
-      <label className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer block border-gray-300 dark:border-gray-600 hover:bg-gray-50 transition">
-        Drag & drop or click to upload
-        <input type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
-      </label>
-
-      <div className="grid grid-cols-2 gap-3 mt-4">
-        {preview.map((src, i) => (
-          <div key={i}>
-            {result && result.boxes ? (
-              <HeatmapCanvas image={src} boxes={result.boxes} />
-            ) : (
-              <img src={src} className="rounded-lg object-cover w-full h-32" />
-            )}
-          </div>
-        ))}
-      </div>
+      <input type="file" onChange={(e) => handleFiles(e.target.files)} className="mb-4" />
+      
+      <div className="grid grid-cols-1 gap-4 mt-4">
+  {preview.map((src, i) => (
+    <div key={i} className="border-2 border-red-500 rounded-xl overflow-hidden">
+      {/* Nếu có result và có tọa độ boxes thì vẽ Heatmap */}
+      {result && result.boxes ? (
+        <HeatmapCanvas image={src} boxes={result.boxes} />
+      ) : (
+        <img src={src} className="w-full h-64 object-cover" />
+      )}
+    </div>
+  ))}
+</div>
 
       <button
         onClick={handleSubmit}
-        disabled={files.length === 0 || loading}
-        className="mt-4 w-full py-2 rounded-xl bg-green-600 text-white flex items-center justify-center gap-2 hover:bg-green-700 disabled:opacity-50"
+        disabled={loading || files.length === 0}
+        className="mt-4 w-full py-2 bg-green-600 text-white rounded-xl"
       >
-        {loading ? <span className="animate-spin">🌀</span> : "Analyze"}
+        {loading ? "Analyzing..." : "Analyze"}
       </button>
 
-      {result && (
-        <div id="result" className="mt-4">
-          <AIResult severity={result.severity} type={result.type} />
-        </div>
-      )}
+      {result && <AIResult severity={result.severity} type={result.type} />}
     </div>
   );
 }
