@@ -5,38 +5,18 @@ type Props = {
   type: string;
 };
 
-export default function AIResult({ severity, type }: Props) {
-  const color =
-    severity === "high"
-      ? "bg-red-500"
-      : severity === "medium"
-      ? "bg-yellow-500"
-      : "bg-green-500";
-
+export default function AIResult({ severity, type }: { severity?: string; type?: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="
-        mt-6 p-4 rounded-xl shadow-lg
-        bg-white dark:bg-gray-800
-        text-gray-800 dark:text-white
-      "
-    >
-      <h3 className="font-bold mb-3">AI Result</h3>
-
-      <div className="flex items-center gap-3">
-        <span
-          className={`px-3 py-1 text-white rounded-lg shadow ${color}`}
-        >
-          {severity?.toUpperCase() || "N/A"}
+    <div className="mt-4 p-4 bg-white rounded-lg shadow-inner border border-red-200">
+      <h3 className="text-red-600 font-bold mb-2">Báo cáo điểm đen:</h3>
+      <div className="flex gap-4">
+        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+          {severity || "Đang quét..."}
         </span>
-
-        <span className="text-gray-700 dark:text-gray-300">
-          {type?.toUpperCase() || "N/A"}
+        <span className="bg-gray-200 px-3 py-1 rounded-full text-sm">
+          {type || "Chưa xác định"}
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 }

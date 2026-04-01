@@ -17,25 +17,35 @@ export default function UploadForm() {
   };
 
   const handleSubmit = async () => {
-    if (files.length === 0) return;
-    setLoading(true);
-    setResult(null);
+  if (files.length === 0) return;
+  setLoading(true);
+  setResult(null); // Reset kết quả cũ
 
-    const formData = new FormData();
+  const formData = new FormData();
+  formData.append('file', files[0]);
+
+  try {
+    console.log("Đang gọi API...");
+    const response = await axios.post('http://127.0.0.1:8000/reports/', formData);
     
-    formData.append('file', files[0]); 
-
-    try {
-      // Đổi localhost thành 127.0.0.1 để tránh lỗi CORS khi backend chạy trên localhost
-      const response = await axios.post('http://127.0.0.1:8000/reports/', formData);
+    // Kiểm tra xem Backend có trả về 'boxes' không
+    console.log("Dữ liệu nhận được:", response.data);
+    
+    if (response.data) {
       setResult(response.data);
-    } catch (error) {
-      console.error("Lỗi kết nối:", error);
-      alert("Backend chưa chạy hoặc sai địa chỉ API!");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("Lỗi rồi Xeon ơi:", error);
+    // Nếu lỗi, tao sẽ ép nó hiện một cái "điểm đen" giả để mày xem Heatmap có chạy không
+    setResult({
+      severity: "High (Fake)",
+      type: "Test Point",
+      boxes: [{ x: 20, y: 30, width: 40, height: 40 }] 
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow w-full">
